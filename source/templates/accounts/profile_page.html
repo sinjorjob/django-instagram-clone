@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% include 'includes/navbar.html' %}
+    <div class="container mt-5">
+        <div class="row mt-5">
+            <div class="col-12 mt-5">{% include 'includes/alerts.html' %}</div>
+        </div>
+{#    ############}
+            <div class="row mt-4">
+                <div class="col-lg-4 col-sm-12 text-center text-lg-left mt-4">
+                      <div class="p-0">
+                          <img class="avatar avatar-128 bg-light rounded-circle text-white" src="{{ user_profile.profile_picture.url }}">
+                      </div>
+                </div>
+
+                <div class="col-lg-8 col-sm-12 mt-4">
+                      <div class="row mt-4">
+
+                              <div class="col-lg-3 col-sm-4 text-center">
+                                  <h3 class="text-primary">{{ user_profile.display_name }}</h3>
+                              </div>
+
+                                <div class="col-lg-3 col-sm-8">
+                                     
+                                      <form action="{% url 'accounts:user_profile' user_profile.username_slug %}" method="post">
+                                          {% csrf_token %}
+                                
+                                        {% if user_profile in user.profile.follows.all %}
+                                            <button class="btn btn-sm btn-danger text-light btn-submit rounded mt-1 btn-block" name="unfollow" value="unfollow">フォロー解除</button>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-primary text-light btn-submit rounded mt-1 btn-block" name="follow" value="follow">フォローする</button>
+                                        {% endif %}
+                                     </form>
+                                  </div>
+
+                                <div class="col-lg-7 col-sm-0"></div>
+                      </div>
+                            <div class="row mt-2 text-lg-left">
+                                  <div class="col-lg-2 col-4 active-color mt-2 mt-lg-0"><button class="bg-light text-dark btn-light btn-sm btn rounded"><b>{{ user_profile.posts_count }}</b>
+                                      投稿</button> </div>
+                                  <div class="col-lg-2 col-4 active-color mt-2 mt-lg-0"><button class="bg-light text-dark btn-light btn-sm btn rounded" data-toggle="modal" data-target="#exampleModal"><b>{{ user_profile.followers_count }}</b> Followers</button></div>
+                                  <div class="col-lg-2 col-4 active-color mt-2 mt-lg-0"><button class="bg-light text-dark btn-light btn-sm btn rounded" data-toggle="modal" data-target="#exampleModal2"><b>{{ user_profile.following_count }}</b> Following</button></div>
+                            </div>
+                </div>
+
+            </div>
+
+            <hr class="mt-5">
+            <!-- Start自分が投稿した記事一覧を表示-->
+            <div class="row">
+                {% if posts %}
+                    {% for post in posts %}
+                    <div class="col-lg-4 col-sm-12">
+                    <div class="card mt-4" style="width: 23rem;">
+                                  <div class="card-body">
+                                  <!-- Start  投稿者の記事の場合のみ編集、削除アイコンを表示する-->
+                                  {% if viewer_profile.user.pk == user_profile.user.pk %}
+                                  <div class="row">
+                                      <div class="col-12 text-right">
+                                          <a href="{% url 'posts:edit_post' post.pk %}"><i class="fa-solid fa-pen text-primary mb-4 mr-2"></i></a>
+                                          <span>
+                                            <a href="{% url 'posts:delete_post' post.pk %}"><i class="fa-solid fa-trash-can text-primary mb-4"></i></a>
+                                          </span>
+                                      </div>
+                                  </div>
+                                  {% endif %}
+                                  <!-- End  投稿者の記事の場合のみ編集、削除アイコンを表示する-->
+                                      <a href="#"><img src="{{ post.photo.url }}" class="rounded img-fluid" style="height: 20rem; width: 20rem" alt="Post Photo"></a>
+                                      <a class="text-decoration-none" href="{% url 'accounts:user_profile' post.owner.profile.username_slug %}">
+                                        <h4 class="card-title d-inline-block mt-2">{{ post.owner.username}}</h4>
+                                      </a>
+                                      <p class="card-text mt-2"><small>{{ post.description }}</small></p>
+                                  <!--自分がいいねした投稿の場合赤色❤マークにする-->
+                                  {% if post in posts_liked %}
+                                        <a href="{% url 'posts:like_post' post.id %}"><i class="fa-solid fa-heart fa-2x text-danger mt-1"></i></a>
+                                  <!--自分がまだいいねしてない投稿の場合白色❤マークにする-->
+                                   {% else %}
+                                        <a href="{% url 'posts:like_post' post.id %}"><i class="fa-regular fa-heart fa-2x text-primary mt-1"></i></a>
+                                {% endif %}
+                                      <a href="#"><i class="fa-regular fa-comment fa-2x text-primary ml-2"></i></a>
+                                      <p class="card-text h6">いいね: {{ post.post_likes }}</p>
+                                        {% if post.view_recent_comments %}
+                                        <small class="d-block"><b>Comments</b> <a class="text-decoration-none" href="#">See all ({{ post.post_comments }})</a></small>
+                                      {% endif %}
+                                        <p class="card-text mt-2">{{ post.created_at }}</p>
+                                  </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-lg-12 col-sm-12 text-center mt-5">
+                        <i class="fa-solid fa-camera fa-5x text-center text-primary"></i>
+                    </div>
+                    <div class="col-lg-12 col-sm-12 text-center mt-5">
+                        <h4>まだ投稿がありません。</h4>
+                        <small class="text-muted">{{ user_profile.user.username }}さんが投稿すると、ここに写真が表示されます。</small>
+                    </div>
+                     <div class="col-lg-12 col-sm-12 text-center mt-5">
+                    </div>
+                     <div class="col-lg-12 col-sm-12 text-center mt-5">
+                    </div>
+                     <div class="col-lg-12 col-sm-12 text-center mt-5">
+                    </div>
+                {% endif %}
+                </div>
+                <!-- End 自分が投稿した記事一覧を表示 -->
+
+            </div>  <!-- end container mt-5 -->
+
+
+    <!--フォロワーとフォローユーザ一覧の表示(モーダル)-->
+    {% include 'includes/followers_following_list.html' %}
+{% endblock %}

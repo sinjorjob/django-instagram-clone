@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% include 'includes/navbar.html' %}
+{% include 'includes/alerts.html' %}
+<div class="container mt-5">
+    <div class="row mt-5">
+        <div class="col-lg-2 col-sm-0"></div>
+
+        <div class="col-lg-6 col-sm-12 p-0">
+
+            <form method="post">
+                {% csrf_token %}
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <img id="photo" class="w-100" style="height: 30rem; width: 40rem" src="{{ object.photo.url }}">
+                            <a class="text-decoration-none"
+                                href="{% url 'accounts:user_profile' object.owner.profile.username_slug %}">
+                                <h4 class="card-title d-inline-block mt-2">{{ object.owner.username}}</h4>
+                            </a>
+                            <p class="card-text mt-2"><small>{{ object.description }}</small></p>
+                            {% if post in get_liked_posts_by_user %}
+                            <a href="#"><i class="fa-solid fa-heart fa-2x text-danger mt-1"></i></a>
+                            {% else %}
+                            <a href="#"><i class="fa-regular fa-heart fa-2x text-primary mt-1"></i></a>
+                            {% endif %}
+                            <a href="#"><i class="fa-regular fa-comment fa-2x text-primary ml-2"></i></a>
+                            <p class="card-text">Likes: {{ post.post_likes }}</p>
+                            {% if post.view_recent_comments %}
+                            <small class="d-block"><b>Comments</b> <a class="text-decoration-none" href="#">See all ({{
+                                    post.post_comments }})</a></small>
+                            {% endif %}
+                            <p class="card-text mt-2">{{ object.created_at }}</p>
+                        </div>
+                    </div>
+                    <p>上記の投稿を本当に削除しますか？</p>
+         
+
+                <button class="btn btn-submit btn-primary btn-block mt-2">削除</button>
+            </form>
+        </div>
+        <div class="col-lg-3 col-sm-0"></div>
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

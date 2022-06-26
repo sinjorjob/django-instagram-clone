@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block styles %}
+<style>
+    html,
+    body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container vh-100 mt-4">
+    <div class="row mt-4">
+        <div class="col-lg-6 col-sm-12 mt-4">
+            <div class="card p-0 w-100 h-100">
+                <div class="card-body p-0">
+                    <img class="w-100 h-100 rounded"
+                        src="https://images.unsplash.com/photo-1595039838779-f3780873afdd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+                        alt="People laughing">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-sm-12 mt-4">
+            <form action="{% url 'accounts:login' %}" method="post">
+                {% csrf_token %}
+                <div class="card w-100 h-100 text-center">
+                    <div class="card-body">
+                        <a href="{% url 'accounts:login' %}"><img class="w-35 h-35 rounded"
+                                src="https://www.instagram.com/static/images/web/logged_out_wordmark.png/7a252de00b20.png"
+                                alt="Instagram"></a>
+                        <!-- フォームエラーの表示-->
+                        {% for error in form.non_field_errors %}
+                        <div id="message" class="container">
+                            <div class="alert alert-danger" role="alert">
+                                {{ error }}
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        {% for field in form %}
+                        <div class="fieldWrapper mt-4">
+                            {{ field.errors }}
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <button class="btn btn-submit btn-primary btn-block mt-2">ログイン</button>
+            </form>
+            <div class="row mt-2">
+                <div class="col-5 p-0">
+                    <hr>
+                </div>
+                <div class="col-2 text-center">OR</div>
+                <div class="col-5 p-0">
+                    <hr>
+                </div>
+            </div>
+            <a href="#" class="text-decoration-none text-primary">
+                <p class="text-center ">アカウントがない方はこちら</p>
+            </a>
+            <a href="#" class="text-decoration-none text-primary">
+                <p class="text-center">パスワードを忘れましたか?</p>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{# Footer #}
+</div>
+<div class="fixed-bottom">
+    {% include 'includes/footer.html' %}
+</div>
+</div>
+{% endblock %}

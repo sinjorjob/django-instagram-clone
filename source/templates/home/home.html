@@ -1,0 +1,183 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% include 'includes/navbar.html' %}
+<div id="home-content" class="container mt-5">
+    {% include 'includes/alerts.html' %}
+    <div class="row mt-5"></div>
+   
+
+    {% if posts %}
+    {% for post in posts %}
+    <div class="row mt-5">
+        <div class="col-lg-2 col-sm-0"></div>
+        <div class="col-lg-7 col-sm-12 p-0">
+            <div class="card p-2 mx-auto" style="width: 38rem;">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-8 col-sm-8">
+                            <a class="text-decoration-none"
+                                href="{% url 'accounts:user_profile' post.owner.profile.username_slug %}">
+                                <img class="avatar avatar-32 bg-light rounded-circle text-white"
+                                    src="{{ post.owner.profile.profile_picture.url }}">
+                                <h4 class="card-title d-inline-block">{{ post.owner.username}}</h4>
+                            </a>
+
+                        </div>
+                        <div class="col-lg-4 col-sm-4">
+                            <p id="{{ post.pk }}">{{ post.created_at }}</p>
+                        </div>
+                    </div>
+                    <a href="#">
+                        <img src="{{ post.photo.url }}" class="w-100 h-100 rounded mx-auto d-block rounded"
+                            style="height: 20rem; width: 40rem" alt="Post Photo">
+                    </a>
+                    <!--自分がいいねした投稿の場合赤色❤マークにする-->
+                    {% if post in posts_liked %}
+                    <!--<a href="{% url 'posts:like_post' post.id %}"><i class="fa-solid fa-heart fa-2x text-danger mt-1"></i></a>-->
+                    <a class="likebutton" href="#" data-catid="{{ post.id }}"><i id="like{{ post.id }}" class="fa-solid fa-heart fa-2x text-danger mt-1"></i></a>
+                    
+                    <!--自分がまだいいねしてない投稿の場合白色❤マークにする-->
+                    {% else %}
+                    <!--<a href="{% url 'posts:like_post' post.id %}"><i class="fa-regular fa-heart fa-2x mt-1 text-primary"></i></a>-->
+                    <a class="likebutton" href="#" data-catid="{{ post.id }}"><i id="like{{ post.id }}" class="fa-regular fa-heart fa-2x mt-1 text-primary"></i></a>
+                     {% endif %}
+                    <a href="#"><i class="fa-regular fa-comment fa-2x text-primary ml-2 mt-1"></i></a>
+                    <p id="post_likes{{ post.id }}">いいね: {{ post.post_likes }}</p>
+                    <h3 class="card-text"><a class="text-decoration-none"
+                            href="{% url 'accounts:user_profile' post.owner.profile.username_slug %}">
+                            {{post.owner.username}}</a></h3>
+                    <small>{{ post.description}}</small>
+                    {% if post.view_recent_comments %}
+                    <small class="d-block mt-3"><b>最近のコメント</b> <a class="text-decoration-none"
+                            href="{% url 'posts:single_post' post.id %}">コメント{{ post.post_comments }}件をすべて見る </a></small>
+                    {% for comment in post.view_recent_comments %}
+                    <a class="text-decoration-none" href="{% url 'accounts:user_profile' comment.user.profile.username_slug %}">
+                        <img class="avatar avatar-32 bg-light rounded-circle text-white"
+                            src="{{ comment.user.profile.profile_picture.url }}"></a>
+                        <small class="card-title d-inline-block"><span><b>{{ comment.user }}</b></span>: 
+                            {{comment.content }}</small></a><span><small> {{ comment.created_at }}</small></span>
+                    <br>
+                    {% endfor %}
+                    {% endif %}
+                    <div>
+                        <form action="{% url 'posts:add_comment' post.id %}" method="post">
+                            {% csrf_token %}
+                            {% for field in form %}
+                            <div class="row mt-4">
+                                <a class="d-inline-block ml-3" href="{% url 'accounts:user_profile' user.profile.username_slug %}"> <img
+                                        class="avatar avatar-32 bg-light rounded-circle bg-primary text-white d-inline-block"
+                                        src="{{ get_avatar }}"></a>
+                                <div class="d-inline-block ml-4">
+                                    {{ field.errors }}
+                                    {{ field }}
+                                </div>
+                                {% endfor %}
+                                <div class="d-inline-block ml-4">
+                                    <button class="btn btn-submit btn-primary btn-block">コメントする</button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-0"></div>
+    </div>
+    {% endfor %}
+    {% elif users %}
+    {% for user in users %}
+    <div class="row mt-5">
+        <div class="col-lg-2 col-sm-0"></div>
+        <div class="col-lg-6 col-sm-12 p-0">
+            <div class="card p-0">
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-4">
+                            <a class="text-decoration-none" href="{% url 'accounts:user_profile' user.username_slug %}">
+                                <img class="avatar avatar-64 bg-light rounded-circle text-white"
+                                    src="{{ user.profile_picture.url }}">
+                                <h4 class="card-title d-inline-block ml-2 pt-1">{{ user.user.username}}</h4>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 mt-2">
+                            <small>{{ user.bio }}</small>
+                        </div>
+                        <div class="col-lg-12 col-sm-12 mt-1">
+                            <b>Followers: {{ user.followers_count }}</b>
+                        </div>
+                        <div class="col-lg-12 col-sm-12">
+                            <b>Following: {{ user.following_count }}</b>
+                        </div>
+                        <div class="col-lg-12 col-sm-12">
+                            <b>Posts: {{ user.posts_count }}</b>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-lg-3 col-sm-0"></div>
+    </div>
+    {% endfor %}
+    {% elif not users %}
+    <div class="row mt-5">
+        <div class="col-lg-2 col-sm-0"></div>
+        <div class="col-lg-6 col-sm-12 p-0">
+            <div class="card p-0">
+                <div class="card-title text-center mt-4">
+                    <h3>We could not match your query.</h3>
+                </div>
+                <div class="card-body">
+                    <p><b>Why?</b></p>
+                    <p>There are no users with desired name</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+  
+</div>
+</div>
+
+<script type="text/javascript"> 
+    $('.likebutton').click(function(e){ 
+        e.preventDefault();  // 画面遷移を無効化
+        var id;
+        id = $(this).attr("data-catid");
+        url = "/posts/like2/" + id;
+        $.ajax( 
+            { 
+                type:"GET", 
+                url: url, 
+                //data:{ 
+                //    post_id: id 
+                //    }, 
+                success: function( data ) { 
+                    //何もしない
+                    let element = document.getElementById('like'+ id);
+                    console.log('class : ' + element.className);
+                    console.log('post_likes:' + data.post_likes);
+                    class_name = element.className;
+                    let postLikesCount = document.getElementById('post_likes' + id);
+                    postLikesCount.textContent = "いいね: " + data.post_likes;
+                    if (class_name == 'fa-solid fa-heart fa-2x text-danger mt-1') {
+                        $( '#like'+ id ).removeClass('fa-solid fa-heart fa-2x text-danger mt-1'); 
+                        $( '#like'+ id ).addClass('fa-regular fa-heart fa-2x mt-1 text-primary');
+                    }else{
+                        $( '#like'+ id ).removeClass('fa-regular fa-heart fa-2x mt-1 text-primary'); 
+                        $( '#like'+ id ).addClass('fa-solid fa-heart fa-2x text-danger mt-1');
+                    }
+                } 
+            }) 
+        });
+
+ 
+
+</script>
+{% endblock %}

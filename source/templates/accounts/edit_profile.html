@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% include 'includes/navbar.html' %}
+    <div class="text-primary">
+    
+    </div>
+    <div class="row mt-5"></div>
+    <div class="row mt-5"></div>
+<div id="home-content" class="container mt-5">
+    {% include 'includes/alerts.html' %}
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title text-center">プロファイルの更新画面</h4>
+    <form action="{% url 'accounts:edit_profile' object.pk %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-row text-center mt-4 justify-content-center">
+                              <div class="col-md-6 col-lg-6 col-sm-6 w-50 h-50 rounded">
+                                  <img class="avatar avatar-128 bg-light rounded-circle bg-primary text-white" src="{{ user_profile.profile_picture.url }}">
+                              </div>
+                        </div>
+                        <div class="form-row text-center justify-content-center mt-2">
+                            <div class="form-group col-md-6 col-lg-6 col-sm-6">
+                                <label>表示名(20文字以内）</label>
+                                {{ form.display_name }}
+                            </div>
+                        </div>
+                        <div class="form-row text-center justify-content-center mt-2">
+                             <div class="form-group col-md-6 col-lg-6 col-sm-6">
+                                <label>サムネイル画像</label>
+                                {{ form.profile_picture }}
+                            </div>
+                        </div>
+                        <input type="submit" value="更新" class="btn btn-primary justify-content-center">
+                    </form>
+  </div>
+
+</div>
+</div>
+{% endblock %}

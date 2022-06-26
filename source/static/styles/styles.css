@@ -1,0 +1,38 @@
+.empty-text {
+	color: #777;
+	font-size: 1.5rem;
+	text-align: center;
+}
+
+.received-message {
+	background-color: #f3f3f3;
+	border-radius: 30px;
+	padding: 10px 25px;
+
+
+}
+
+.sent-message {
+	background-color: rgb(1,196,255);
+	color: #fff;
+	border-radius: 30px;
+	padding: 10px 25px;
+}
+
+.message-receiver-container {
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.message-image {
+	border-radius: 10px;
+	max-width: 35%;
+	height: auto;
+}
+
+.active-color > .btn-light:hover, .active-color > .btn-light:focus, .active-color > .btn-light:active:focus, .active-color > .btn-light:active, .active-color > .btn-light:active:hover{
+  background-color: #F8F9FA!important;
+  border-color: #F8F9FA!important;
+	outline: none!important;
+  box-shadow: none!important;
+}
